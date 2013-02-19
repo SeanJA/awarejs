@@ -11,6 +11,12 @@
 			var lastVisit = false;
 			var cookieRegex = new RegExp("(?:^|.*;\\s*)lastVisit\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*");
 
+			/* Helpful little date helper here! */
+			Date.prototype.getDOY = function() {
+				var onejan = new Date(this.getFullYear(),0,1);
+				return Math.ceil((this - onejan) / 86400000);
+			}
+			
 			function setLastVisit(date) {
 				if (window.localStorage) {					
 					window.localStorage.setItem('lastVisit',date);
@@ -196,7 +202,7 @@
 					lastVisit = new Date(lastVisit);
 					reader.lastVisit = lastVisit;
 
-					if (now - lastVisit > 86400000) {
+					if (lastVisit.getDOY() < now.getDOY()) {
 						$('body').addClass('first-visit-of-day');
 						$('body').addClass('repeat-visitor');
 						reader.firstVisitOfDay = true;
